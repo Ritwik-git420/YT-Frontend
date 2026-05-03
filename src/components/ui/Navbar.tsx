@@ -2,8 +2,8 @@
 import Link from "next/link";
 import { Menu, Search } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/reusable/button";
+import { Input } from "@/components/reusable/input";
 import {
 	Sheet,
 	SheetClose,
@@ -21,7 +21,7 @@ function Navbar() {
 					<span className="flex size-8 items-center justify-center rounded-lg bg-primary text-sm font-semibold text-primary-foreground">
 						F
 					</span>
-					<span className="font-heading text-base font-semibold">Vid Tube</span>
+					<span className="">Vid Tube</span>
 				</Link>
 
 				<form className="mx-auto hidden w-full max-w-md md:block">
@@ -41,7 +41,7 @@ function Navbar() {
 
 				<div className="ml-auto hidden items-center md:flex">
 					<Button asChild>
-						<Link href="/login">Login</Link>
+						<Link href="/register">Register</Link>
 					</Button>
 				</div>
 
