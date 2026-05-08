@@ -56,7 +56,7 @@ function Navbar() {
 							<Menu />
 						</Button>
 					</SheetTrigger>
-					<SheetContent side="right" className="w-80">
+					<SheetContent side="left" className="w-80">
 						<SheetHeader>
 							<SheetTitle>
 								<Link href="/" className="flex items-center gap-2">
