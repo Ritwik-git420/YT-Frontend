@@ -5,6 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import { Button } from "@/components/reusable/button";
 import { Input } from "@/components/reusable/input";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Inputs = {
 	fullName: string
@@ -15,33 +16,8 @@ type Inputs = {
 	coverImage: FileList
 }
 
-const registerUser: SubmitHandler<Inputs> = async (data) => {
-	const userData = new FormData();
-	userData.append("fullName", data.fullName);
-	userData.append("email", data.email);
-	userData.append("password", data.password);
-	userData.append("username", data.username);
-	userData.append("avtar", data.avtar[0]);
-	userData.append("coverImage", data.coverImage[0]);
-
-	try {
-		const response = await fetch("http://localhost:8000/api/v1/users/register", {
-			method: "POST",
-			body: userData,
-		});
-
-		const result = await response.json();
-		if (!response.ok) {
-			throw new Error(result.message || "Registration failed");
-		}
-
-		console.log("Registered user:", result);
-	} catch (error) {
-		console.log(error);
-	}
-}
-
 export default function RegisterPage() {
+	const router = useRouter();
 	const { register, handleSubmit, trigger, formState: { errors, isSubmitting } } = useForm<Inputs>({
 		shouldUnregister: false,
 	})
@@ -51,6 +27,33 @@ export default function RegisterPage() {
 		const isValid = await trigger(["fullName", "email", "password"]);
 		if (isValid) {
 			setStep("1");
+		}
+	}
+
+	const registerUser: SubmitHandler<Inputs> = async (data) => {
+		const userData = new FormData();
+		userData.append("fullName", data.fullName);
+		userData.append("email", data.email);
+		userData.append("password", data.password);
+		userData.append("username", data.username);
+		userData.append("avtar", data.avtar[0]);
+		userData.append("coverImage", data.coverImage[0]);
+
+		try {
+			const response = await fetch("http://localhost:8000/api/v1/users/register", {
+				method: "POST",
+				body: userData,
+			});
+
+			const result = await response.json();
+			if (!response.ok) {
+				throw new Error(result.message || "Registration failed");
+			}
+
+			if (result.success) router.push("/login");
+			console.log("Registered user:", result);
+		} catch (error) {
+			console.log(error);
 		}
 	}
 

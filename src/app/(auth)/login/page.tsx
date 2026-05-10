@@ -12,6 +12,7 @@ type Inputs = {
 
 const loginUser: SubmitHandler<Inputs> = async (data) => {
 	console.log(data)
+	
 }
 
 export default function LoginPage() {
