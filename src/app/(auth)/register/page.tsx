@@ -44,7 +44,7 @@ export default function RegisterPage() {
 				method: "POST",
 				body: userData,
 			});
-
+			
 			const result = await response.json();
 			if (!response.ok) {
 				throw new Error(result.message || "Registration failed");

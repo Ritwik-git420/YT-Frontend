@@ -4,19 +4,53 @@ import { LockKeyhole, LogIn, Mail } from "lucide-react";
 import { useForm, SubmitHandler } from "react-hook-form"
 import { Button } from "@/components/reusable/button";
 import { Input } from "@/components/reusable/input";
+import { Console } from "console";
+
 
 type Inputs = {
 	email: string
 	password: string
 }
 
-const loginUser: SubmitHandler<Inputs> = async (data) => {
-	console.log(data)
-	
-}
+
 
 export default function LoginPage() {
-	const { register, handleSubmit, watch, formState: { errors } } = useForm<Inputs>()
+
+	const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Inputs>();
+
+
+	const loginUser: SubmitHandler<Inputs> = async (data) => {
+		console.log(data)
+		try {
+			const response = await fetch(
+				"http://localhost:8000/api/v1/users/login",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+					body: JSON.stringify({
+						email: data.email,
+						password: data.password,
+					}),
+				}
+			)
+
+			const result = await response.json()
+
+			if (!response.ok) {
+				throw new Error(result.message || "Login failed")
+			}
+
+
+		} catch (error) {
+			console.log(error)
+		}
+
+
+
+	}
 	return (
 		<section className="rounded-lg border bg-card p-5 shadow-sm">
 			<div className="mb-6">
@@ -37,12 +71,12 @@ export default function LoginPage() {
 							id="email"
 							type="email"
 							placeholder="name@example.com"
-							{...register("email")}
+							{...register("email", { required: "Email is required" })}
 							autoComplete="email"
 							className="pl-8"
-							required
 						/>
 					</div>
+					{errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
 				</div>
 
 				<div className="space-y-2">
@@ -61,14 +95,14 @@ export default function LoginPage() {
 						<LockKeyhole className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
 						<Input
 							id="password"
-							{...register("password")}
+							{...register("password", { required: "Password is required" })}
 							type="password"
 							placeholder="Enter your password"
 							autoComplete="current-password"
 							className="pl-8"
-							required
 						/>
 					</div>
+					{errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
 				</div>
 
 				<label className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -80,7 +114,7 @@ export default function LoginPage() {
 					Remember me
 				</label>
 
-				<Button type="submit" size="lg" className="w-full">
+				<Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
 					<LogIn />
 					Login
 				</Button>
